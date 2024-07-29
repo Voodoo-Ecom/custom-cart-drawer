@@ -1,0 +1,529 @@
+<script src="{{ 'siema.min.js' | asset_url }}" defer="defer"></script>
+{{ 'voo-cart-drawer.css' | asset_url | stylesheet_tag }}
+<script src="{{ 'voo-cart-drawer.js' | asset_url }}" defer="defer"></script>
+
+<style>
+  voo-cart-drawer {
+    --border-color: {{ section.settings.cart_drawer_border_color }};
+    --text-primary: {{ section.settings.cart_drawer_text_primary }};
+    --text-secodary: {{ section.settings.cart_drawer_text_secondary }};
+    --bg-primary: {{ section.settings.cart_drawer_bg_primary }};
+    --bg-secondary: {{ section.settings.cart_drawer_bg_secondary }};
+    --button-primary-bg: {{ section.settings.cart_drawer_btn_bg }};
+    --button-primary-text-color: {{ section.settings.cart_drawer_btn_text_color }};
+    --input-bg: {{ section.settings.cart_drawer_input_bg }};
+    --input-text-color: {{ section.settings.cart_drawer_input_text_color }};
+  }
+</style>
+
+<script>
+  {% liquid
+    assign announcementBarBlock = section.blocks | where: 'type', 'announcement_bar'
+    assign recommendationsBlock = section.blocks | where: 'type', 'recommendations'
+    assign cartNoteBlock = section.blocks | where: 'type', 'cart-drawer-note'
+    assign rewardBarBlock = section.blocks | where: 'type', 'reward-bar'
+    assign freeGiftBlock = section.blocks | where: 'type', 'free-gift'
+    assign bogoBlock = section.blocks | where: 'type', 'bogo'
+
+    assign blockTypesString = ''
+
+    for block in section.blocks
+      assign blockTypesString = blockTypesString | append: block.type | append: ','
+    endfor
+  %}
+
+  const blockOrder = "{{blockTypesString}}".split(',').slice(0,-1);
+
+  window.VOOCART = {
+    config: {
+      settings: {
+        heading: '{{ section.settings.title }}',
+        continueLink: '{{ section.settings.continue_link }}',
+        cartType: '{{ section.settings.cart_type }}',
+        showStickyCart: {{ section.settings.show_sticky_cart }},
+        stickyCartVerticalAlign: '{{ section.settings.sticky_cart_vertical_align }}',
+        stickyCartHorizontalAlign: '{{ section.settings.sticky_cart_horizontal_align }}',
+      },
+      blocks: {},
+      blockOrder
+    },
+  };
+</script>
+
+{%- for block in section.blocks -%}
+  {%- case block.type -%}
+    {%- when 'announcement_bar' -%}
+      <script>
+        VOOCART.config.blocks.announcementBar = {
+          settings: {
+            announcementAutoplay: {{ announcementBarBlock.first.settings.announcement_autoplay }},
+            announcementMessages: [ '{{ announcementBarBlock.first.settings.announcement_1 }}', '{{ announcementBarBlock.first.settings.announcement_2 }}', '{{ announcementBarBlock.first.settings.announcement_3 }}']
+          }
+        }
+      </script>
+    {%- when 'recommendations' -%}
+      <script>
+        VOOCART.config.blocks.recommendations = {
+          settings: {
+            heading: '{{ recommendationsBlock.first.settings.recommendations_heading }}',
+            productList: {{ recommendationsBlock.first.settings.recommendations_products | json }},
+            useRecommendationsApi: {{ recommendationsBlock.first.settings.use_recommendations_api }},
+            limit:  {{ recommendationsBlock.first.settings.recommendations_limit }},
+            navMode: '{{ recommendationsBlock.first.settings.nav_mode }}',
+          }
+        }
+      </script>
+    {%- when 'cart-drawer-note' -%}
+      <script>
+        VOOCART.config.blocks.cartDrawerNote = {
+          settings: {
+            isCollapsible: {{ cartNoteBlock.first.settings.is_collapsible }},
+          }
+        }
+      </script>
+    {%- when 'reward-bar' -%}
+      <script>
+        VOOCART.config.blocks.rewardBar = {
+          settings: {
+            rewards: [
+              {
+                title: "{{ rewardBarBlock.first.settings.reward1_title }}",
+                targetTotal: {{ rewardBarBlock.first.settings.reward1_target_total }},
+              },
+              {
+                title: "{{ rewardBarBlock.first.settings.reward2_title }}",
+                targetTotal: {{ rewardBarBlock.first.settings.reward2_target_total }},
+              },
+              {
+                title: "{{ rewardBarBlock.first.settings.reward3_title }}",
+                targetTotal: {{ rewardBarBlock.first.settings.reward3_target_total }},
+              }
+            ]
+          }
+        }
+      </script>
+    {%- when 'free-gift' -%}
+      <script>
+        VOOCART.config.blocks.freeGift = {
+          settings: {
+            productVariantId: {{ freeGiftBlock.first.settings.variant_id }},
+            targetTotal: {{freeGiftBlock.first.settings.target_total}}
+          }
+        }
+      </script>
+    {%- when 'bogo' -%}
+      <script>
+        VOOCART.config.blocks.bogo = {
+          settings: {
+            pairs: [
+              {
+                productX: {{ all_products[bogoBlock.first.settings.pair1_product_x] | json }},
+                productXVariants: {{ bogoBlock.first.settings.pair1_product_variants_x |  split: ',' | json}},
+                productY: {{ all_products[bogoBlock.first.settings.pair1_product_y] | json }},
+                productYVariants: {{ bogoBlock.first.settings.pair1_product_variants_y |  split: ',' | json}},
+              },
+              {
+                productX: {{ all_products[bogoBlock.first.settings.pair2_product_x] | json }},
+                productXVariants: {{ bogoBlock.first.settings.pair2_product_variants_x |  split: ',' | json}},
+                productY: {{ all_products[bogoBlock.first.settings.pair2_product_y] | json }},
+                productYVariants: {{ bogoBlock.first.settings.pair2_product_variants_y |  split: ',' | json}},
+              }
+            ]
+          }
+        }
+      </script>
+  {%- endcase -%}
+{%- endfor -%}
+
+{% schema %}
+{
+  "name": "Voo cart drawer",
+  "limit": 1,
+  "settings": [
+    {
+      "id": "title",
+      "type": "text",
+      "label": "Cart heading",
+      "default": "Your cart"
+    },
+    {
+      "id": "continue_link",
+      "type": "url",
+      "label": "Link for continue shopping button"
+    },
+    {
+      "id": "cart_type",
+      "type": "select",
+      "label": "Type of cart",
+      "default": "drawer",
+      "options": [
+        {
+          "value": "drawer",
+          "label": "drawer"
+        },
+        {
+          "value": "modal",
+          "label": "modal"
+        }
+      ]
+    },
+    {
+      "type": "header",
+      "content": "Styles cusmomization"
+    },
+    {
+      "type": "color",
+      "id": "cart_drawer_text_primary",
+      "label": "Primary text color",
+      "default": "#000"
+    },
+    {
+      "type": "color",
+      "id": "cart_drawer_text_secondary",
+      "label": "Secondary text color",
+      "default": "#666"
+    },
+    {
+      "type": "color",
+      "id": "cart_drawer_bg_primary",
+      "label": "Primary background",
+      "default": "#fff"
+    },
+    {
+      "type": "color",
+      "id": "cart_drawer_bg_secondary",
+      "label": "Secondary background",
+      "default": "#f2f2f2"
+    },
+    {
+      "type": "color",
+      "id": "cart_drawer_border_color",
+      "label": "Border color",
+      "default": "#e6e6e6"
+    },
+    {
+      "type": "color",
+      "id": "cart_drawer_btn_text_color",
+      "label": "Button text color",
+      "default": "#fff"
+    },
+    {
+      "type": "color",
+      "id": "cart_drawer_btn_bg",
+      "label": "Button background color",
+      "default": "#000"
+    },
+    {
+      "type": "color",
+      "id": "cart_drawer_input_text_color",
+      "label": "Input text color",
+      "default": "#000"
+    },
+    {
+      "type": "color",
+      "id": "cart_drawer_input_bg",
+      "label": "Input background color",
+      "default": "#fff"
+    },
+    {
+      "type": "range",
+      "id": "cart_drawer_border_radius",
+      "label": "Border radius",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "range",
+      "id": "cart_drawer_modal_border_radius",
+      "label": "Modal border radius",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 0
+    },
+    {
+      "type": "header",
+      "content": "Sticky cart"
+    },
+    {
+      "id": "show_sticky_cart",
+      "type": "checkbox",
+      "label": "Show sticky cart",
+      "default": true
+    },
+    {
+      "id": "sticky_cart_vertical_align",
+      "type": "select",
+      "label": "Vertical align",
+      "default": "center",
+      "options": [
+        {
+          "value": "center",
+          "label": "center"
+        },
+        {
+          "value": "bottom",
+          "label": "bottom"
+        }
+      ]
+    },
+    {
+      "id": "sticky_cart_horizontal_align",
+      "type": "select",
+      "label": "Horizontal align",
+      "default": "left",
+      "options": [
+        {
+          "value": "left",
+          "label": "left"
+        },
+        {
+          "value": "right",
+          "label": "right"
+        }
+      ]
+    }
+  ],
+  "blocks": [
+    {
+      "type": "announcement_bar",
+      "name": "Announcement bar",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "checkbox",
+          "id": "announcement_autoplay",
+          "label": "Autoplay",
+          "default": true
+        },
+        {
+          "type": "richtext",
+          "id": "announcement_1",
+          "label": "Announcement 1",
+          "default": "<p>Your promotion text</p>"
+        },
+        {
+          "type": "richtext",
+          "id": "announcement_2",
+          "label": "Announcement 2",
+          "default": "<p>Your promotion text</p>"
+        },
+        {
+          "type": "richtext",
+          "id": "announcement_3",
+          "label": "Announcement 3",
+          "default": "<p>Your promotion text</p>"
+        }
+      ]
+    },
+    {
+      "type": "cart_items",
+      "name": "Cart items",
+      "limit": 1,
+      "settings": []
+    },
+    {
+      "type": "recommendations",
+      "name": "Recommendations",
+      "limit": 1,
+      "settings": [
+        {
+          "id": "recommendations_heading",
+          "type": "text",
+          "label": "Heading",
+          "default": "You may also like"
+        },
+        {
+          "type": "product_list",
+          "id": "recommendations_products",
+          "label": "t:sections.cart-drawer.blocks.recommendations.settings.product_list.label"
+        },
+        {
+          "id": "use_recommendations_api",
+          "type": "checkbox",
+          "label": "Use recommendations API",
+          "default": false,
+          "info": "This rewrite manually added products from previous setting"
+        },
+        {
+          "id": "recommendations_limit",
+          "type": "range",
+          "label": "Limit",
+          "min": 1,
+          "max": 5,
+          "step": 1,
+          "default": 3
+        },
+        {
+          "id": "nav_mode",
+          "label": "Navigation",
+          "type": "select",
+          "options": [
+            {
+              "value": "list",
+              "label": "list"
+            },
+            {
+              "value": "slider",
+              "label": "slider"
+            }
+          ],
+          "default": "list"
+        }
+      ]
+    },
+    {
+      "type": "cart-drawer-note",
+      "name": "Cart note",
+      "limit": 1,
+      "settings": [
+        {
+          "id": "is_collapsible",
+          "type": "checkbox",
+          "label": "Collapsible",
+          "default": true
+        }
+      ]
+    },
+    {
+      "type": "reward-bar",
+      "name": "Reward bar",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "header",
+          "content": "Reward 1"
+        },
+        {
+          "id": "reward1_title",
+          "type": "text",
+          "label": "Heading"
+        },
+        {
+          "id": "reward1_target_total",
+          "type": "text",
+          "label": "Target total"
+        },
+        {
+          "type": "header",
+          "content": "Reward 2"
+        },
+        {
+          "id": "reward2_title",
+          "type": "text",
+          "label": "Heading"
+        },
+        {
+          "id": "reward2_target_total",
+          "type": "text",
+          "label": "Target total"
+        },
+        {
+          "type": "header",
+          "content": "Reward 3"
+        },
+        {
+          "id": "reward3_title",
+          "type": "text",
+          "label": "Heading"
+        },
+        {
+          "id": "reward3_target_total",
+          "type": "text",
+          "label": "Target total"
+        }
+      ]
+    },
+    {
+      "type": "bogo",
+      "name": "BOGO",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "header",
+          "content": "Pair 1",
+          "info": "If product X is in the cart, product Y will appear as a gift."
+        },
+        {
+          "id": "pair1_product_x",
+          "type": "product",
+          "label": "Product X"
+        },
+        {
+          "id": "pair1_product_variants_x",
+          "type": "text",
+          "label": "Product X variants",
+          "info": "Use comma as separator for multiple variants"
+        },
+        {
+          "id": "pair1_product_y",
+          "type": "product",
+          "label": "Product Y"
+        },
+        {
+          "id": "pair1_product_variants_y",
+          "type": "text",
+          "label": "Product Y variants",
+          "info": "Use comma as separator for multiple variants"
+        },
+        {
+          "type": "header",
+          "content": "Pair 2",
+          "info": "If product X is in the cart, product Y will appear as a gift."
+        },
+        {
+          "id": "pair2_product_x",
+          "type": "product",
+          "label": "Product X"
+        },
+        {
+          "id": "pair2_product_variants_x",
+          "type": "text",
+          "label": "Product X variants",
+          "info": "Use comma as separator for multiple variants"
+        },
+        {
+          "id": "pair2_product_y",
+          "type": "product",
+          "label": "Product Y"
+        },
+        {
+          "id": "pair2_product_variants_y",
+          "type": "text",
+          "label": "Product Y variants",
+          "info": "Use comma as separator for multiple variants"
+        }
+      ]
+    },
+    {
+      "type": "free-gift",
+      "name": "Free gift",
+      "limit": 1,
+      "settings": [
+        {
+          "type": "text",
+          "id": "variant_id",
+          "label": "Gift product",
+          "info": "The product variant that serves as a gift"
+        },
+        {
+          "id": "target_total",
+          "type": "text",
+          "label": "Target total",
+          "info": "Cart total need to reach to get free gift"
+        }
+      ]
+    },
+    {
+      "type": "discount_applicator",
+      "name": "Discount applicator",
+      "limit": 1,
+      "settings": []
+    }
+  ]
+}
+{% endschema %}

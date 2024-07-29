@@ -44,10 +44,132 @@
         "padding_top": 20,
         "padding_bottom": 20
       }
+    },
+    "voo-cart-drawer": {
+      "type": "voo-cart-drawer",
+      "blocks": {
+        "announcement_bar_9CwLJH": {
+          "type": "announcement_bar",
+          "settings": {
+            "announcement_autoplay": true,
+            "announcement_1": "<p>Your cart will expire in <strong>{timer:15}<\/strong> minutes! Checkout now before your items sell out!<\/p>",
+            "announcement_2": "<p>Use <strong>TESTD<\/strong> to get 20% off<\/p>",
+            "announcement_3": "<p>Buy Collection2 or Collection5 to get an amazing bag for free!<\/p>"
+          }
+        },
+        "cart_items_7rHe8c": {
+          "type": "cart_items",
+          "settings": {
+          }
+        },
+        "cart_drawer_note_DeCQrg": {
+          "type": "cart-drawer-note",
+          "settings": {
+            "is_collapsible": true
+          }
+        },
+        "free_gift_EzQKnr": {
+          "type": "free-gift",
+          "settings": {
+            "variant_id": "44217914163481",
+            "target_total": "800"
+          }
+        },
+        "bogo_QTKXbj": {
+          "type": "bogo",
+          "settings": {
+            "pair1_product_x": "amazing-aluminum-bag-collection2",
+            "pair1_product_variants_x": "44217916850457,44217916915993,44217917079833,44217916850457",
+            "pair1_product_y": "amazing-aluminum-bag-collection20",
+            "pair1_product_variants_y": "44217909969177,44217910001945,44217910034713",
+            "pair2_product_x": "amazing-aluminum-bag-collection5",
+            "pair2_product_variants_x": "",
+            "pair2_product_y": "amazing-aluminum-bag-collection15",
+            "pair2_product_variants_y": ""
+          }
+        },
+        "recommendations_eFKRhP": {
+          "type": "recommendations",
+          "settings": {
+            "recommendations_heading": "You may also like",
+            "recommendations_products": [
+              "amazing-aluminum-bag-collection10",
+              "amazing-aluminum-bag-collection13",
+              "amazing-aluminum-bag-collection15",
+              "amazing-aluminum-bag-collection16",
+              "amazing-aluminum-sandals-collection13",
+              "amazing-aluminum-sandals-collection14",
+              "amazing-aluminum-sandals-collection15",
+              "amazing-aluminum-scarf-collection10",
+              "amazing-aluminum-scarf-collection11",
+              "amazing-aluminum-scarf-collection12",
+              "amazing-aluminum-shirt-collection12",
+              "amazing-aluminum-shirt-collection13",
+              "amazing-aluminum-shirt-collection14",
+              "amazing-aluminum-shoes-collection11",
+              "amazing-aluminum-shoes-collection12",
+              "amazing-aluminum-shoes-collection13",
+              "amazing-aluminum-shoes-collection8",
+              "amazing-aluminum-shoes-collection9",
+              "amazing-aluminum-shoes-collection6",
+              "amazing-bronze-scarf-collection3"
+            ],
+            "use_recommendations_api": true,
+            "recommendations_limit": 4,
+            "nav_mode": "slider"
+          }
+        },
+        "reward_bar_aNffJX": {
+          "type": "reward-bar",
+          "settings": {
+            "reward1_title": "10% off",
+            "reward1_target_total": "150",
+            "reward2_title": "Free shipping",
+            "reward2_target_total": "500",
+            "reward3_title": "Free Gift",
+            "reward3_target_total": "800"
+          }
+        },
+        "discount_applicator_x79QNn": {
+          "type": "discount_applicator",
+          "settings": {
+          }
+        }
+      },
+      "block_order": [
+        "announcement_bar_9CwLJH",
+        "cart_items_7rHe8c",
+        "cart_drawer_note_DeCQrg",
+        "free_gift_EzQKnr",
+        "bogo_QTKXbj",
+        "recommendations_eFKRhP",
+        "reward_bar_aNffJX",
+        "discount_applicator_x79QNn"
+      ],
+      "settings": {
+        "title": "Your cart",
+        "continue_link": "",
+        "cart_type": "drawer",
+        "cart_drawer_text_primary": "#000000",
+        "cart_drawer_text_secondary": "#666666",
+        "cart_drawer_bg_primary": "#ffffff",
+        "cart_drawer_bg_secondary": "#f2f2f2",
+        "cart_drawer_border_color": "#e6e6e6",
+        "cart_drawer_btn_text_color": "#ffffff",
+        "cart_drawer_btn_bg": "#000000",
+        "cart_drawer_input_text_color": "#000000",
+        "cart_drawer_input_bg": "#ffffff",
+        "cart_drawer_border_radius": 0,
+        "cart_drawer_modal_border_radius": 0,
+        "show_sticky_cart": true,
+        "sticky_cart_vertical_align": "center",
+        "sticky_cart_horizontal_align": "right"
+      }
     }
   },
   "order": [
     "announcement-bar",
-    "header"
+    "header",
+    "voo-cart-drawer"
   ]
 }
