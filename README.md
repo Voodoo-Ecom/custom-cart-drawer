@@ -30,6 +30,6 @@ General settings also include options for customizing the basic styling.
 2. Add _"siema.min.js"_ to assets folder for sliders.
 3. Add _"voo-cart-drawer.liquid"_ files to sections folder.
 4. Add section to header group or render it in _theme.liquid_ layout using section tag _{% section 'voo-cart-drawer' %}_.
-5. Configure the settings in the customizer according to your needs, add the necessary blocks (including Cart Items), and test the functionality. To ensure changes take effect during customization, refresh the store page after making updates in customizer.
+5. Configure the settings in the customizer according to your needs, add the necessary blocks (including Cart items), and test the functionality. To ensure changes take effect during customization, refresh the store page after making updates in customizer.
 
    
